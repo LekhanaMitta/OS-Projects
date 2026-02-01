@@ -202,3 +202,76 @@ Consumer Program Started...
 Producer: Final Value of data->x = 0
 ```
 
+## 5. Multi-Service Client–Server System Using IPC (C)
+This project implements a **multi-service client–server architecture** using **Unix Inter-Process Communication (IPC)**.  
+Clients submit requests to a shared queue, the server processes them concurrently, and results are returned using shared memory and signals.
+* Implemented a client–server system using **shared memory, semaphores, signals, and fork/exec**
+* Designed a shared request queue protected by semaphores to avoid race conditions
+* Enabled concurrent request handling by spawning child processes for each service
+* Used per-client shared memory and signals for response delivery
+
+1. **String Sorting** – Sorts multiple strings in dictionary order  
+2. **Array Index Search** – Finds the index of a number in an array  
+3. **Factorial Computation** – Computes factorial of a given integer  
+
+Each service runs as a **separate executable**.
+
+#### Required Files (Same Directory)
+```text
+client.c
+server.c
+service1.c   // string sorting
+service2.c   // array index search
+service3.c   // factorial
+````
+
+
+### How to Run the Code?
+
+#### Step 1: Compile all programs
+
+Run the following commands in the project directory:
+```bash
+gcc client.c -o client
+gcc server.c -o server
+gcc service1.c -o service1
+gcc service2.c -o service2
+gcc service3.c -o service3
+```
+#### Step 2: Start the server
+
+Open **Terminal 1** and run:
+```bash
+./server
+```
+The server will wait for incoming client requests.
+
+#### Step 3: Start the client
+Open **Terminal 2** and run:
+```bash
+./client
+```
+Follow the prompts to:
+* Choose a service (1 / 2 / 3)
+* Enter the required input values
+
+
+## Execution Flow1. Client writes request into shared memory queue
+2. Semaphore ensures safe queue access
+3. Server dequeues request
+4. Server forks a child process
+5. Child executes the required service using `exec()`
+6. Service writes result into client shared memory
+7. Client receives `SIGUSR1` signal and prints output
+
+---
+
+#### Example
+Client selects **Factorial**:
+```
+Enter number to find factorial: 5
+```
+Output:
+```
+factorial is : 120
+```
