@@ -134,3 +134,71 @@ Result:
 ```text
 /home/user/output_folder/output_sample.csv
 ```
+
+## 3. Producer–Consumer Synchronization Using Shared Memory (C)
+
+This project implements the classic **Producer–Consumer problem** using **shared memory** and **Unix signals** for synchronization. The goal is to coordinate two independent processes without busy waiting, ensuring correct access to shared data.
+* Implemented a producer and a consumer process that communicate through a shared memory segment.
+* Used signal-based blocking and unblocking to synchronize access instead of spin locks or busy waiting.
+* Ensured correctness and data consistency across thousands of iterations.
+
+- A shared memory structure stores:
+  - Shared counter
+  - Process IDs of producer and consumer
+  - Synchronization variables (`full` and `empty`)
+- The **producer** increments the shared value.
+- The **consumer** decrements the shared value.
+- Blocking and unblocking are implemented using:
+  - `pause()` to block
+  - `kill()` with `SIGUSR1` to wake the other process
+- This design avoids busy waiting and demonstrates OS-level synchronization.
+
+---
+
+### How to Run the Code?
+
+#### Step 1: Save the files
+Save the producer code as:
+```bash
+producer.c
+````
+
+Save the consumer code as:
+```bash
+consumer.c
+```
+
+> Both files must be in the **same directory**.
+
+#### Step 2: Compile the programs
+
+```bash
+gcc producer.c -o producer
+gcc consumer.c -o consumer
+```
+
+---
+
+#### Step 3: Run the programs
+
+ **Important:** Start the consumer first.
+```bash
+./consumer
+```
+
+In a separate terminal:
+```bash
+./producer
+```
+
+* The producer increments a shared variable for a fixed number of iterations.
+* The consumer decrements the same variable.
+* Final output confirms correct synchronization and shared memory usage.
+
+Example:
+```text
+Producer Program Started...
+Consumer Program Started...
+Producer: Final Value of data->x = 0
+```
+
